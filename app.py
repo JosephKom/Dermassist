@@ -170,7 +170,10 @@ def render_banner(level, gemini, rule):
     elif level == CANNOT_ASSESS and gemini.get("image_issue"):
         parts.append(f"<p>{html.escape(gemini['image_issue'])}</p>")
 
-    reasons = [] if gemini is None else list(gemini.get("urgency_reasons") or [])
+    reasons = []
+    if gemini is not None:
+        raw_reasons = gemini.get("urgency_reasons") or []
+        reasons = raw_reasons if isinstance(raw_reasons, list) else [raw_reasons]
     if rule:
         reasons.append(f"Raised by safety rule: {rule}")
     if reasons:
