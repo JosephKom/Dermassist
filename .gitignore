@@ -13,3 +13,7 @@ venv/
 # Gradio caches and flagged uploads (the app must not keep user images)
 .gradio/
 flagged/
+.venv/
+.env
+__pycache__/
+*.py[cod]
