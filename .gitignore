@@ -1,4 +1,3 @@
-# Local environment & secret API keys (CRITICAL)
 # Python
 __pycache__/
 *.pyc
@@ -14,21 +13,3 @@ venv/
 # Gradio caches and flagged uploads (the app must not keep user images)
 .gradio/
 flagged/
-.venv/
-.env
-
-# Python runtime cache and bytecode
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Virtual environments
-venv/
-.venv/
-env/
-
-# IDE & OS system files
-.DS_Store
-.vscode/
-.idea/.env

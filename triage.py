@@ -56,7 +56,7 @@ def compute_cancer_score(
 
 
 def floor(
-    level: UrgencyLevel,
+    level: Optional[UrgencyLevel],
     probabilities: Dict[str, float],
     answers: UserAnswers,
 ) -> Tuple[UrgencyLevel, Optional[str]]:
@@ -76,7 +76,8 @@ def floor(
     escalate_symptoms: List[str] = config.get("escalate_on_symptoms", ["grown", "changed", "bled"])
 
     rank_map = {lvl: idx for idx, lvl in enumerate(hierarchy)}
-    base_rank = rank_map.get(level, 0)
+    effective_level: UrgencyLevel = level or "Nothing flagged"
+    base_rank = rank_map.get(effective_level, 0)
     prompt_review_rank = rank_map.get("Prompt review", 3)
 
     # 1. Compute ResNet18 cancer score (mel + bcc)
@@ -101,4 +102,4 @@ def floor(
         return "Prompt review", reason_msg
 
     # No escalation triggered, or Gemini is already at or above target
-    return level, None
+    return effective_level, None

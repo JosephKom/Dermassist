@@ -1,64 +1,62 @@
-# Dermassist
+# DermaAssist
 
-DermaAssist is a prototype that looks at a close-up photo of a skin spot and suggests how urgently it should be seen by a doctor.
+## Project layout
 
-Two models give an opinion. Gemini gives a diagnosis, an urgency level and general treatment information. A ResNet18 classifier trained on HAM10000 shows its top three guesses alongside. A small set of safety rules can raise Gemini's urgency level but never lowers it.
+- `app.py` - Gradio web application.
+- `main.py` - command-line prediction entry point.
+- `predictor.py`, `gemini_assess.py`, and `triage.py` - application pipeline modules.
+- `models/best_model.pth` - ResNet18 model weights.
+- `examples/` - local example images used by the web app.
+- `data/` - source dataset assets and attribution files.
+- `scripts/` - optional cache and evaluation utilities.
+- `tests/` - automated triage tests.
 
-> **Research prototype. Not a medical device and not a diagnosis.** It can be wrong, and "Nothing flagged" is never an all-clear. Always see a doctor about a spot that worries you.
+## Run locally
 
-## Run the web app
+Install the dependencies, then start the web app:
 
-You need Python 3 (tested on 3.14) and a Gemini API key (get one free at https://aistudio.google.com/apikey).
+```bash
+pip install -r requirements.txt
+python app.py
+```
 
-1. Create a virtual environment and install the dependencies:
+To run one image through the ResNet18 predictor:
 
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate        # Windows: venv\Scripts\activate
-   pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-   pip install -r requirements.txt
-   ```
+```bash
+python main.py examples/test1.png
+```
 
-   The first `pip install` gets the CPU-only build of PyTorch. The app runs the model on one image at a time, which takes well under a second on a CPU. Without it, on Linux pip downloads several GB of NVIDIA GPU libraries that the app doesn't use. On macOS, plain `pip install -r requirements.txt` is enough.
+Copy `.env.example` to `.env` and replace the placeholder with your Gemini API
+key before using the Gemini assessment step:
 
-2. Add your API key:
+```bash
+cp .env.example .env
+```
 
-   ```bash
-   cp .env.example .env
-   ```
+Keep `.env` local and never commit it. The application is a research
+prototype, not a medical device or diagnosis.
 
-   Then open `.env` and set `GEMINI_API_KEY=your-key`. `.env` is ignored by git, so the key is never committed.
+## Test locally
 
-3. Start the app:
+From the repository root, install dependencies and run the automated tests:
 
-   ```bash
-   python app.py
-   ```
+```bash
+python -m pip install -r requirements.txt
+python -m pytest -q
+```
 
-4. Open http://127.0.0.1:7860 in your browser.
+Run the model-only smoke test with the bundled image:
 
-To use the app, upload a close-up photo of a skin spot, or pick one of the example images. Answer the five yes/no questions and click **Assess**.
+```bash
+python main.py examples/test1.png
+```
 
-Without an API key, or if the Gemini call fails, the app still runs. It shows the ResNet18 result and the safety rules' urgency level only.
+Run the web app:
 
-### Privacy
+```bash
+python app.py
+```
 
-- The app runs on your own machine and is only reachable from it.
-- Uploaded images are sent to Google Gemini for analysis.
-- Nothing is saved: the app does not store uploads or log your answers.
-
-### What the result shows
-
-| Part | Meaning |
-| --- | --- |
-| Urgency level | **Prompt review** (see a doctor soon), **Routine review** (book a skin check), **Nothing flagged** (not an all-clear), or **Cannot assess** (the image isn't a usable close-up of a skin spot). |
-| Reasons | Why that level was chosen. A "Raised by safety rule" line means a rule raised Gemini's level. |
-| Gemini's opinion | Diagnosis, confidence and visible features. |
-| Image model (ResNet18) | Its top three of seven conditions. A warning appears when it disagrees with Gemini. |
-| Treatment | How the condition is usually treated, in general terms only. |
-
-<!-- Tri: add the results caveats here (validation set shares lesions with training, so the 77% is optimistic; urgency cutoffs in thresholds.json are set by hand, not tuned on data). -->
-
-## For developers
-
-See [CONTRACTS.md](CONTRACTS.md) for the interfaces between `app.py`, `predictor.py`, `gemini_assess.py` and `triage.py`.
+Open the local URL printed by Gradio, upload an image, answer the five
+questions, and click **Assess**. Without `GEMINI_API_KEY`, the app should still
+show the ResNet18 result and the triage floor; Gemini's text will be unavailable.
