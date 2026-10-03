@@ -1,4 +1,5 @@
 import pytest
+
 from triage import compute_cancer_score, floor
 
 
@@ -40,54 +41,54 @@ def clean_answers():
 
 
 def test_cancer_score_calculation(benign_probs, malignant_probs):
-    # mel (0.03) + bcc (0.02) = 0.05
-    assert pytest.approx(compute_cancer_score(benign_probs), 0.001) == 0.05
-    # mel (0.35) + bcc (0.15) = 0.50
-    assert pytest.approx(compute_cancer_score(malignant_probs), 0.001) == 0.50
+    assert compute_cancer_score(benign_probs) == pytest.approx(0.05)
+    assert compute_cancer_score(malignant_probs) == pytest.approx(0.50)
 
 
 def test_no_escalation_when_all_clear(benign_probs, clean_answers):
-    res = floor("Nothing flagged", benign_probs, clean_answers)
-    assert res["final_level"] == "Nothing flagged"
-    assert not res["escalated"]
-    assert len(res["fired_rules"]) == 0
+    assert floor("Nothing flagged", benign_probs, clean_answers) == (
+        "Nothing flagged",
+        None,
+    )
 
 
 def test_cutoff_escalation(malignant_probs, clean_answers):
-    # Gemini says 'Nothing flagged', but cancer score = 0.50 >= 0.20
-    res = floor("Nothing flagged", malignant_probs, clean_answers)
-    assert res["final_level"] == "Prompt review"
-    assert res["escalated"]
-    assert any("combined malignant risk" in r for r in res["fired_rules"])
+    level, reason = floor("Nothing flagged", malignant_probs, clean_answers)
+    assert level == "Prompt review"
+    assert reason is not None
+    assert "malignant risk score" in reason
 
 
 def test_red_flag_symptom_escalation(benign_probs, clean_answers):
     clean_answers["bled"] = True
-    res = floor("Routine review", benign_probs, clean_answers)
-    assert res["final_level"] == "Prompt review"
-    assert res["escalated"]
-    assert any("Red-flag symptom reported: bled" in r for r in res["fired_rules"])
+    level, reason = floor("Routine review", benign_probs, clean_answers)
+    assert level == "Prompt review"
+    assert reason is not None
+    assert "bled" in reason
 
 
 def test_never_lowers_level(malignant_probs, clean_answers):
-    # If Gemini already deemed 'Prompt review', floor maintains it
-    res = floor("Prompt review", malignant_probs, clean_answers)
-    assert res["final_level"] == "Prompt review"
-    assert not res["escalated"]
+    assert floor("Prompt review", malignant_probs, clean_answers) == (
+        "Prompt review",
+        None,
+    )
 
 
-def test_cannot_assess_escalation_guard(benign_probs, clean_answers):
-    # An unassessed image with active symptoms must still alert the user
+def test_cannot_assess_escalates_on_red_flag(benign_probs, clean_answers):
     clean_answers["grown"] = True
-    res = floor("Cannot assess", benign_probs, clean_answers)
-    assert res["final_level"] == "Prompt review"
-    assert res["escalated"]
+    level, reason = floor("Cannot assess", benign_probs, clean_answers)
+    assert level == "Prompt review"
+    assert reason is not None
 
 
 def test_non_escalating_symptom(benign_probs, clean_answers):
-    # Itching and pain alone do not hit high-risk escalate thresholds unless configured
     clean_answers["itched"] = True
     clean_answers["hurt"] = True
-    res = floor("Nothing flagged", benign_probs, clean_answers)
-    assert res["final_level"] == "Nothing flagged"
-    assert not res["escalated"]
+    assert floor("Nothing flagged", benign_probs, clean_answers) == (
+        "Nothing flagged",
+        None,
+    )
+
+
+def test_none_level_starts_at_nothing_flagged(benign_probs, clean_answers):
+    assert floor(None, benign_probs, clean_answers) == ("Nothing flagged", None)
