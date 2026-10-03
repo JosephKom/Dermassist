@@ -19,7 +19,7 @@ CLASS_NAMES = (
     "nv",
     "vasc",
 )
-MODEL_PATH = Path(__file__).parent / "skin-disease-detection-main1" / "best_model.pth"
+MODEL_PATH = Path(__file__).parent / "models" / "best_model.pth"
 IMAGE_SIZE = 224
 
 

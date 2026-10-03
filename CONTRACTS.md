@@ -44,7 +44,7 @@ answers = {"grown": bool, "changed": bool, "bled": bool, "itched": bool, "hurt":
 - `image` is a `PIL.Image.Image` in RGB.
 - Returns all seven class codes mapped to probabilities that sum to 1.
 - Loads the model once, when the module is imported, not on every call.
-- Model weights: `skin-disease-detection-main1/best_model.pth`.
+- Model weights: `models/best_model.pth`.
 
 ### `assess(image, probabilities, answers) -> dict | None` (`gemini_assess.py`)
 
