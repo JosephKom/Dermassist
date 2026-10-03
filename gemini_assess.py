@@ -4,6 +4,10 @@ from typing import Any, Dict, Optional
 from google import genai
 from google.genai import types
 from PIL import Image
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 def _get_client() -> Optional[genai.client]:
     api_key = os.getenv("GEMINI_API_KEY")

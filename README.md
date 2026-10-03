@@ -26,8 +26,15 @@ To run one image through the ResNet18 predictor:
 python main.py examples/test1.png
 ```
 
-Set `GEMINI_API_KEY` in `.env` before using the Gemini assessment step. The
-application is a research prototype, not a medical device or diagnosis.
+Copy `.env.example` to `.env` and replace the placeholder with your Gemini API
+key before using the Gemini assessment step:
+
+```bash
+cp .env.example .env
+```
+
+Keep `.env` local and never commit it. The application is a research
+prototype, not a medical device or diagnosis.
 
 ## Test locally
 
