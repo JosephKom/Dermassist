@@ -8,15 +8,18 @@ Two models give an opinion. Gemini gives a diagnosis, an urgency level and gener
 
 ## Run the web app
 
-You need Python 3 and a Gemini API key (get one free at https://aistudio.google.com/apikey).
+You need Python 3 (tested on 3.14) and a Gemini API key (get one free at https://aistudio.google.com/apikey).
 
 1. Create a virtual environment and install the dependencies:
 
    ```bash
    python3 -m venv venv
    source venv/bin/activate        # Windows: venv\Scripts\activate
+   pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
    pip install -r requirements.txt
    ```
+
+   The first `pip install` gets the CPU-only build of PyTorch. The app runs the model on one image at a time, which takes well under a second on a CPU. Without it, on Linux pip downloads several GB of NVIDIA GPU libraries that the app doesn't use. On macOS, plain `pip install -r requirements.txt` is enough.
 
 2. Add your API key:
 
