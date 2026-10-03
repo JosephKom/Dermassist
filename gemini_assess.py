@@ -5,6 +5,9 @@ from typing import Any, Dict, Optional
 from google import genai
 from google.genai import types
 from PIL import Image
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # 1. Exact shared urgency enum strings
 URGENCY_LEVELS = [
