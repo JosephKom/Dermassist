@@ -64,6 +64,8 @@ answers = {"grown": bool, "changed": bool, "bled": bool, "itched": bool, "hurt":
 | `urgency_reasons` | `list[str]` | Why it chose that level. |
 | `treatment_info` | `str` | General information only, with no doses or product names. |
 
+- Reads the API key from the `GEMINI_API_KEY` environment variable. `app.py`
+  loads `.env` before importing this module, and `.env.example` lists the variable.
 - Cached demo replies for the example images are served from inside `assess`,
   so `app.py` doesn't need to know about them.
 

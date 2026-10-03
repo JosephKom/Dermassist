@@ -8,6 +8,10 @@ import html
 from pathlib import Path
 
 import gradio as gr
+from dotenv import load_dotenv
+
+# Load GEMINI_API_KEY from .env before gemini_assess is imported.
+load_dotenv()
 
 # Agreed urgency levels (see CONTRACTS.md; must match triage.py and gemini_assess.py).
 CANNOT_ASSESS = "Cannot assess"
