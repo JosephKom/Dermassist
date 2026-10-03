@@ -1,53 +1,44 @@
+import hashlib
 import json
 import os
 from PIL import Image
 from gemini_assess import assess
 
-def cache_demo_responses(
-    manifest_path="examples/examples_manifest.csv",
-    examples_dir="examples",
-    output_cache_path="examples_cache.json"
-):
-    """Pre-computes and caches Gemini responses for staged demo images."""
-    if not os.path.exists(output_cache_path):
-        cache = {}
-    else:
-        with open(output_cache_path, "r", encoding="utf-8") as f:
-            cache = json.load(f)
-
-    # Dummy baseline probabilities and patient responses for caching
-    default_probs = {"mel": 0.15, "nv": 0.70, "bkl": 0.10}
-    default_answers = {
-        "has_grown": False,
-        "has_changed": False,
-        "has_bled": False,
-        "is_itching": False,
-        "is_painful": False
-    }
-
+def build_demo_cache(examples_dir="examples", output_cache_path="examples_cache.json"):
+    """Pre-computes and caches Gemini assessments using image MD5 hashes."""
     if not os.path.exists(examples_dir):
-        print(f"Examples directory '{examples_dir}' not found. Skipping cache build.")
+        print(f"Directory '{examples_dir}' does not exist.")
         return
 
-    for filename in os.listdir(examples_dir):
-        if filename.endswith((".jpg", ".png", ".jpeg")):
-            image_path = os.path.join(examples_dir, filename)
-            if filename in cache:
-                print(f"Skipping already cached: {filename}")
-                continue
+    cache = {}
+    default_probs = {
+        "akiec": 0.05, "bcc": 0.10, "bkl": 0.10,
+        "df": 0.05, "mel": 0.15, "nv": 0.50, "vasc": 0.05
+    }
+    default_answers = {
+        "grown": False, "changed": False,
+        "bled": False, "itched": False, "hurt": False
+    }
 
-            print(f"Caching Gemini response for: {filename}")
+    for filename in os.listdir(examples_dir):
+        if filename.lower().endswith((".jpg", ".png", ".jpeg")):
+            filepath = os.path.join(examples_dir, filename)
             try:
-                img = Image.open(image_path)
-                result = assess(img, default_probs, default_answers, cache_key=None)
-                cache[filename] = result
+                img = Image.open(filepath)
+                img_bytes = img.tobytes()
+                img_hash = hashlib.md5(img_bytes).hexdigest()
+
+                print(f"Caching Gemini response for {filename} (Hash: {img_hash[:8]}...)")
+                res = assess(img, default_probs, default_answers)
+                if res:
+                    cache[img_hash] = res
             except Exception as e:
-                print(f"Failed to cache {filename}: {e}")
+                print(f"Failed to process {filename}: {e}")
 
     with open(output_cache_path, "w", encoding="utf-8") as f:
         json.dump(cache, f, indent=2)
 
-    print(f"Successfully updated cache file '{output_cache_path}'.")
+    print(f"Saved {len(cache)} responses to '{output_cache_path}'.")
 
 if __name__ == "__main__":
-    cache_demo_responses()
+    build_demo_cache()
