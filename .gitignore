@@ -1,3 +1,4 @@
+# Local environment & secret API keys (CRITICAL)
 # Python
 __pycache__/
 *.pyc
@@ -15,5 +16,19 @@ venv/
 flagged/
 .venv/
 .env
+
+# Python runtime cache and bytecode
 __pycache__/
-*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE & OS system files
+.DS_Store
+.vscode/
+.idea/.env

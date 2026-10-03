@@ -1,0 +1,2 @@
+isic_id,attribution,copyright_license,age_approx,anatom_site_1,anatom_site_general,concomitant_biopsy,diagnosis_1,diagnosis_2,diagnosis_3,diagnosis_confirm_type,image_type,melanocytic,sex
+ISIC_0000002,Anonymous,CC-0,60,Upper extremity,upper extremity,True,Malignant,Malignant melanocytic proliferations (Melanoma),"Melanoma, NOS",histopathology,dermoscopic,True,female
