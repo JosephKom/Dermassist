@@ -1,0 +1,8 @@
+torch
+torchvision
+pillow
+numpy
+gradio>=5
+google-genai
+python-dotenv
+pytest
