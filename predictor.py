@@ -19,7 +19,7 @@ CLASS_NAMES = (
     "nv",
     "vasc",
 )
-MODEL_PATH = Path(__file__).with_name("best_model.pth")
+MODEL_PATH = Path(__file__).parent / "models" / "best_model.pth"
 IMAGE_SIZE = 224
 
 
@@ -42,7 +42,7 @@ def _state_dict(checkpoint: object) -> Mapping[str, torch.Tensor]:
     state_dict = {
         key.removeprefix("module."): value
         for key, value in checkpoint.items()
-        if isinstance(value, torch.Tensor)
+        if isinstance(key, str) and isinstance(value, torch.Tensor)
     }
     if not state_dict:
         raise ValueError("best_model.pth contains no tensor weights")
