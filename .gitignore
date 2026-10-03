@@ -1,4 +1,20 @@
 # Local environment & secret API keys (CRITICAL)
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Virtual environments
+venv/
+.venv/
+
+# Secrets: keep the API key out of git (.env.example is the template)
+.env
+
+# Gradio caches and flagged uploads (the app must not keep user images)
+.gradio/
+flagged/
+.venv/
 .env
 
 # Python runtime cache and bytecode
