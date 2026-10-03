@@ -1,0 +1,12 @@
+
+{
+  "cancer_score_cutoff": 0.20,
+  "cancer_classes": ["mel", "bcc"],
+  "escalate_on_symptoms": ["grown", "changed", "bled"],
+  "urgency_hierarchy": [
+    "Cannot assess",
+    "Nothing flagged",
+    "Routine review",
+    "Prompt review"
+  ]
+}
