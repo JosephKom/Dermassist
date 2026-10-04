@@ -396,7 +396,7 @@ HEADER = f"""
   <div class="da-brand">
     <div class="da-mark">{ICONS["scan"]}</div>
     <div>
-      <div class="da-name">DermaAssist <span class="da-ver">Research prototype</span></div>
+      <div class="da-name"> Dermassist <span class="da-ver">Research prototype</span></div>
       <div class="da-tagline">Skin spot triage workspace</div>
     </div>
   </div>
@@ -667,7 +667,7 @@ LOCATE_JS = """
 """
 
 
-with gr.Blocks(title="DermaAssist", fill_width=True) as demo:
+with gr.Blocks(title="Dermassist", fill_width=True) as demo:
     gr.HTML(HEADER, padding=False)
 
     with gr.Row(elem_id="da-work", equal_height=False):

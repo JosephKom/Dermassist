@@ -12,7 +12,7 @@ import httpx
 NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 OVERPASS_URL = "https://overpass-api.de/api/interpreter"
 # Nominatim's usage policy requires an identifying User-Agent.
-HEADERS = {"User-Agent": "DermaAssist/0.1 (research prototype)"}
+HEADERS = {"User-Agent": "Dermassist/0.1 (research prototype)"}
 
 DERM_RADIUS_M = 25_000    # dermatologists are rarer, so search wider
 GENERAL_RADIUS_M = 5_000  # GP practices, clinics and hospitals
